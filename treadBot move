@@ -1,0 +1,38 @@
+#include <kipr/botball.h>
+
+int driveStraight(milliseconds)
+{
+   float time = 0;
+    motor(0,90);
+    motor(1,90);
+    int straightAngle = get_compass_angle();
+for (time = 0; time < milliseconds; time++)
+    {
+        int currentAngle = get_compass_angle();
+            
+        if (currentAngle > straightAngle + 0.5)
+        {
+            motor(1,100);
+            motor(0,90);
+        }
+        
+        if (currentAngle < straightAngle - 0.5)
+        {
+            motor(1,90);
+            motor(0,100);
+        }
+    }
+    
+    return 0;
+}
+
+int main()
+{
+    int milliseconds = 10000;
+    calibrate_compass();
+    enable_servos();
+    printf("Hello World\n");
+driveStraight(milliseconds);
+    ao();
+    return 0;
+}
