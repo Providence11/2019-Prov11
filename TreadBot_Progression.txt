@@ -1,0 +1,122 @@
+#include <kipr/botball.h>
+
+int driveStraight(milliseconds)
+{
+    // NOTE TO JAMES - This seems to move wheelBot at around 2 ft/s or 65 cm/s give or take
+    
+    int time = 0;
+    motor(1,-92);
+    motor(0,-90);
+	for (time = 0; time < milliseconds; time++)
+    {   
+        wait_for_milliseconds(1);
+    }
+    
+    return 0;
+}
+
+
+int setClawPosition(ClawPosition)
+{
+    enable_servos();
+    
+    if (ClawPosition == "open")
+    {
+    	set_servo_position(1, 1860);    
+        wait_for_milliseconds(2500);
+    }
+    
+    if (ClawPosition == "closed")
+    {
+        set_servo_position(1, 666);
+        wait_for_milliseconds(2500);
+    }
+    
+    
+    return 0;
+}
+
+int setArmPosition(ArmPosition)
+{
+    enable_servos();
+    
+    if (ArmPosition == "raised")
+    {
+    	set_servo_position(0, 0);    
+        wait_for_milliseconds(500);
+    }
+    
+    if (ArmPosition == "lowered")
+    {
+        set_servo_position(0, 1150);
+        wait_for_milliseconds(500);
+    }
+    
+    return 0;
+}
+
+int turn(direction){
+    if (direction == "left")
+    {
+    	motor(0,-100);
+        motor(1,0);
+        wait_for_milliseconds(1150);
+    }
+    
+    if (direction == "right")
+    {
+    	motor(0,0);
+        motor(1,-100);
+        wait_for_milliseconds(1150);   
+    }	
+}
+int main()
+{
+	// drive forward to water
+    
+    driveStraight(3500);
+    
+    //open claw to catch water poms
+    
+    enable_servos();
+    motor(1,0);
+    motor(0,0);
+
+    setClawPosition("open");
+    
+    // lower arm to pick up water
+    
+    setArmPosition("lowered");
+    
+    // turn right onto path
+    
+    turn("right");
+    
+    // drive along path to pick up poms
+    
+    driveStraight(2000);
+    
+    // turn left to WRU
+    
+    enable_servos();
+    motor(1,0);
+    motor(0,0);
+
+    turn("left");
+    
+    // trap poms in claw
+    
+    setClawPosition("closed");
+    
+    // raise arm to drop poms in the WRU
+    
+    setArmPosition("raised");
+    
+    // drive to WRU and release
+    
+    driveStraight(1500);
+    setClawPosition("open");
+    
+    ao();
+    return 0;
+}
